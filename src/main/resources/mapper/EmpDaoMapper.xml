@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aaa.ssm.dao.EmpDao">
+    <!--员工分页查询-->
+    <select id="getPage" resultType="map" parameterType="map">
+        select * from (
+        select rownum rn,e.empno,e.ename,e.job,e.mgr,e.hiredate,e.sal,e.comm,e.deptno,t.dname,t.loc
+        from dept t join emp e on e.deptno=t.deptno where rownum &lt; #{end}
+        ) a where a.rn &gt; #{start}
+
+    </select>
+    <!--查询分页总数量-->
+    <select id="getPageCount" resultType="int" parameterType="map">
+        select count(*) as cnt from emp
+    </select>
+    <!--员工添加-->
+    <insert id="add" parameterType="map" >
+        insert into emp(empno,ename,job,hiredate,sal,comm,deptno)values(seq_emp_id.nextval,#{ename},#{job},to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd'),#{sal},#{comm},#{deptno})
+    </insert>
+    <!--根据ID查询员工列表-->
+    <select id="getById" parameterType="int" resultType="java.util.Map">
+        select * from emp where empno=#{empno}
+    </select>
+    <!--员工更新-->
+    <update id="update" parameterType="map">
+        update emp set ename=#{ename},job=#{job},sal=#{sal},comm=#{comm},deptno=#{deptno} where empno=#{empno}
+    </update>
+    <!--员工删除-->
+    <delete id="delete" parameterType="int">
+        delete from emp where empno=#{empno}
+    </delete>
+</mapper>
